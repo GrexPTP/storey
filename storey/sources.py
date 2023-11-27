@@ -1055,6 +1055,7 @@ class SQLSource(_IterableSource, WithUUID):
         key_field: Union[None, str, List[str]] = None,
         id_field: str = None,
         time_fields: List[str] = None,
+        schema: Optional[str] = None,
         **kwargs,
     ):
 
@@ -1068,6 +1069,7 @@ class SQLSource(_IterableSource, WithUUID):
         self.table_name = table_name
         self.db_path = db_path
         self.time_fields = time_fields
+        self.schema = schema
 
         self._key_field = key_field
         self._id_field = id_field
@@ -1084,6 +1086,7 @@ class SQLSource(_IterableSource, WithUUID):
                 metadata,
                 autoload=True,
                 autoload_with=engine,
+                schema=self.schema
             )
             select_object = db.select(table)
             cursor = pandas.read_sql(select_object, con=conn, parse_dates=self.time_fields, chunksize=100)
